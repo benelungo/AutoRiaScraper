@@ -8,7 +8,7 @@ from threading import Thread, Semaphore
 
 proxy = open("proxies.txt").read().split("\n")
 
-num_of_threads = 8
+num_of_threads = len(proxy) < 30 and len(proxy) or 10
 
 
 class Scraper:
@@ -68,13 +68,16 @@ class Scraper:
             Thread(target=self._scrap_car_page, args=(self.car_urls[i], proxies)).start()
 
     def scrap(self, start_page, end_page) -> None:
+        start = time.time()
         self._fill_car_urls(start_page, end_page)
         while self._active_threads != 0:
             time.sleep(1)
         print("Total car urls found: " + str(len(self.car_urls)))
+        end = time.time()
+        print(f'Scraping time: {end - start} seconds')
 
         print("Scrapping car info...")
-        self._fill_cars()
+        # self._fill_cars()
         print("Scraped cars: " + str(len(self.cars)))
         while self._active_threads != 0:
             time.sleep(1)
