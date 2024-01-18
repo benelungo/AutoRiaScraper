@@ -72,6 +72,9 @@ class CarPageParser:
         item = self.soup.select_one("span.label-vin")
         if item:
             return item.get_text()
+        item = self.soup.select_one("span.vin-code")
+        if item:
+            return item.get_text()
 
     def datetime_found(self):
         return date.today().strftime("%d/%m/%Y")
