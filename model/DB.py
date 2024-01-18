@@ -13,7 +13,7 @@ class DB:
             price_usd INT,
             odometer INT,
             username TEXT,
-            phone_number INT,
+            phone_number BIGINT,
             image_url TEXT,
             images_count INT,
             car_number TEXT,
