@@ -21,6 +21,7 @@ class Scraper:
         self.url = url
         self.car_urls = []
         self.page_is_last = False
+        self.semaphore = Semaphore(num_of_threads)
 
     @staticmethod
     def _make_request(url: str, proxies=None) -> BeautifulSoup:
@@ -46,31 +47,19 @@ class Scraper:
             self.page_is_last = True
         self.car_urls.extend([item.get("href") for item in car_items])
         print("Found cars: " + str(len(self.car_urls)))
+        self.semaphore.release()
 
     def scrap(self) -> list:
         page_number = 0
         page_size = "100"
         car_urls = []
-        thread_local = local()
-
-        def get_session() -> Session:
-            if not hasattr(thread_local, 'session'):
-                thread_local.session = requests.Session()
-            return thread_local.session
-
-        def download_link(url: str):
-            session = get_session()
-            with session.get(url) as response:
-                print(f'Read {len(response.content)} from {url}')
-
-        def download_all(urls: list) -> None:
-            with ThreadPoolExecutor(max_workers=num_of_threads) as executor:
-                executor.map(download_link, urls)
 
         while not self.page_is_last:
-            urls = [self.url + '&page=' + str(page_number) + '&size=' + page_size for page_number in range(page_number, page_number + num_of_threads)]
-            download_all(urls)
-            page_number += num_of_threads
+            self.semaphore.acquire()
+            url = self.url + '&page=' + str(page_number) + '&size=' + page_size
+            proxies = {'http': proxy[page_number % len(proxy)]}
+            Thread(target=self._scrap_main_page, args=(url, proxies)).start()
+            page_number += 1
 
         cars = []
         with Pool(processes=4) as pool:
