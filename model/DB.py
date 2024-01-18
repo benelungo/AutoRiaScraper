@@ -66,8 +66,11 @@ class DB:
 
     def insert(self, car: Car):
         self._connect_DB()
-        print("Update car in the DB: " + car.url)
-        self.cursor.execute(self._insert_request.format(self.table_name, *car.get_all()))
+        print("Insert car in the DB: " + car.url)
+        try:
+            self.cursor.execute(self._insert_request.format(self.table_name, *car.get_all()))
+        except Exception as e:
+            print(e)
         self._close_DB()
 
     def get_all(self) -> list:
@@ -95,10 +98,13 @@ class DB:
         self._conn.commit()
 
     def dump(self):
-        with open(f'{datetime.date.today().strftime("%d%m%Y")}.pkl', 'wb+') as handle:
+        print("Dumping DB...")
+        path = f'dumps/{datetime.date.today().strftime("%d%m%Y")}.pkl'
+        with open(path, 'wb+') as handle:
             pickle.dump(self.get_all(), handle)
+        print("DB dumped to " + path)
 
     @staticmethod
     def load(date):
-        with open(f'{date}.pkl', 'rb') as handle:
+        with open(f'dumps/{date}.pkl', 'rb') as handle:
             return pickle.load(handle)
