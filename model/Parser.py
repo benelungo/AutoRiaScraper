@@ -1,3 +1,8 @@
+import re
+from datetime import date
+
+from selenium.webdriver.common.by import By
+
 
 # url (строка);
 # title (строка);
@@ -24,34 +29,52 @@ class CarPageParser:
         self.soup = soup
 
     def title(self):
-        return self.soup.select_one("a.ticket-item__title").get_text()
+        item = self.soup.select_one("h3.auto-content_title")
+        if item:
+            return item.get_text()
 
     def price_usd(self):
-        return self.soup.select_one("div.ticket-item__price").get_text()
+        item = self.soup.select_one("section.price div.price_value--additional span span")
+        if item:
+            return int(item.get_text()[:-1].replace(" ", ""))
 
     def odometer(self):
-        return self.soup.select_one("div.ticket-item__mileage").get_text()
+        item = self.soup.select_one("div.bold.dhide")
+        if item:
+            result = re.sub("[^0-9]", "", item.get_text()) or '0'
+            return int(result)*1000
 
     def username(self):
-        return self.soup.select_one("div.ticket-item__user").get_text()
+        item = self.soup.select_one("div.seller_info_name")
+        if item:
+            return item.get_text().replace(" ", "")
 
     def phone_number(self):
-        return self.soup.select_one("div.ticket-item__phone").get_text()
+        item = self.soup.select_one("a.phone")
+        if item:
+            number = "38" + re.sub("[^0-9]", "", item.get_text())
+            return int(number)
 
     def image_url(self):
-        return self.soup.select_one("div.ticket-item__image img").get("src")
+        item = self.soup.select_one('a.photo-74x56.loaded picture source')
+        if item:
+            return item.get('srcset').replace('s.webp', 'fx.webp')
 
     def images_count(self):
-        return len(self.soup.select("div.ticket-item__image img"))
+        return len(self.soup.select('a.photo-74x56.loaded picture source'))
 
     def car_number(self):
-        return self.soup.select_one("div.ticket-item__number").get_text()
+        item = self.soup.select_one("span.state-num")
+        if item:
+            return " ".join(item.get_text().split(" ")[:3])
 
     def car_vin(self):
-        return self.soup.select_one("div.ticket-item__vin").get_text()
+        item = self.soup.select_one("span.label-vin")
+        if item:
+            return item.get_text()
 
     def datetime_found(self):
-        return self.soup.select_one("div.ticket-item__date").get_text()
+        return date.today().strftime("%d/%m/%Y")
 
     def get_car_info(self) -> list:
         return [self.title(), self.price_usd(), self.odometer(), self.username(), self.phone_number(), self.image_url(),
