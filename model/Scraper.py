@@ -89,14 +89,14 @@ class CarPageScraper:
 
     def _click_number_button(self):
         try:
-            WebDriverWait(self.driver, 300).until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="phonesBlock"]/div/span/a'))).click()
+            WebDriverWait(self.driver, 20).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, 'openPopupPhone'))).click()
         except Exception as e:
             print(e)
 
     def _click_cookie_banner(self):
         self.first_run = False
-        WebDriverWait(self.driver, 30).until(
+        WebDriverWait(self.driver, 40).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="gdpr-notifier"]/div[1]/div[2]/label[1]'))).click()
 
     def get_page_soup(self, url):
