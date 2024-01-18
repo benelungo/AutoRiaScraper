@@ -117,10 +117,8 @@ class CarPageScraper:
         return Car(url, *parser.get_car_info())
 
     def scrap(self, urls) -> list:
-        cars = []
         for url in urls:
-            cars.append(self.scrap_car_page(url))
-        return cars
+            yield self.scrap_car_page(url)
 
     def __del__(self):
         self.driver.quit()
