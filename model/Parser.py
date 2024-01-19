@@ -17,6 +17,9 @@ from selenium.webdriver.common.by import By
 # datetime_found (дата сохранения в базу);
 
 class MainPageParser:
+    """
+    Class for parsing main page.
+    """
     def __init__(self, soup=None):
         self.soup = soup
 
@@ -25,6 +28,24 @@ class MainPageParser:
 
 
 class CarPageParser:
+    """
+    Class for parsing car page.
+
+    Attributes:
+        soup (BeautifulSoup): soup object
+
+    Methods:
+        get_all(self): return list of attributes
+
+    Example:
+        >>> parser = CarPageParser(soup)
+        ... parser.get_all()
+
+    Description:
+    This class is used to parse car page.
+    It takes soup object as an argument and returns list of attributes.
+
+    """
     def __init__(self, soup):
         self.soup = soup
 

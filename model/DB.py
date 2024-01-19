@@ -6,6 +6,38 @@ from model.Car import Car
 
 
 class DB:
+    """
+    PostgreSQL DB
+
+    Attributes:
+        dbname (str): database name
+        user (str): user name
+        password (str): password
+        host (str): host
+        table_name (str): table name
+
+    Methods:
+        get_by_url(self, url: str): get car by url
+        insert(self, car: Car): insert car in the DB
+        remove(self, car): remove car from the DB
+        get_all(self): get all cars from the DB
+        drop(self): drop table
+        dump(self): dump DB
+        load(self): load DB
+
+    Example:
+        >>> db = DB('dbname', 'user', 'password', 'host')
+        ... car = Car(url, title, price_usd, odometer, username, phone_number, image_url, images_count, car_number, car_vin, datetime_found)
+        ... db.insert(car)
+        ... db.get_by_url(url)
+        ... db.remove(car)
+
+    Description:
+        This is the PostgreSQL DB
+        Before start using DB you must run PostgreSQL server
+        You can dump and load DB via dump() and load() methods
+
+    """
     _execute_request = '''
         CREATE TABLE IF NOT EXISTS {} (
             url TEXT PRIMARY KEY NOT NULL,

@@ -11,6 +11,32 @@
 # datetime_found (дата сохранения в базу);
 
 class Car:
+    """
+    Car class
+
+    Attributes:
+        url: str
+        title: str
+        price_usd: int
+        odometer: int
+        username: str
+        phone_number: int
+        image_url: str
+        images_count: int
+        car_number: str
+        car_vin: str
+        datetime_found: str
+    Methods:
+        get_all(self): return list of attributes
+
+    Example:
+        >>> car = Car(url, title, price_usd, odometer, username, phone_number, image_url, images_count, car_number, car_vin, datetime_found)
+        ... car.get_all()
+
+    Description:
+    This class is used to create objects of cars.
+
+    """
     def __init__(self, url: str, title: str, price_usd: int,
                  odometer: int, username: str, phone_number: int, image_url: str, images_count: int,
                  car_number: str, car_vin: str, datetime_found: str):
@@ -29,18 +55,3 @@ class Car:
     def get_all(self):
         return [self.url, self.title, self.price_usd, self.odometer, self.username, self.phone_number, self.image_url,
                 self.images_count, self.car_number, self.car_vin, self.datetime_found]
-
-    def print(self):
-        print("\nCar:")
-        print(self.url)
-        print(self.title)
-        print(self.price_usd)
-        print(self.odometer)
-        print(self.username)
-        print(self.phone_number)
-        print(self.image_url)
-        print(self.images_count)
-        print(self.car_number)
-        print(self.car_vin)
-        print(self.datetime_found)
-        print()

@@ -18,9 +18,27 @@ num_of_threads = 5
 
 
 class MainPageScraper:
+    """
+    Main page scraper
+
+    Attributes:
+        car_urls (list): list of car urls
+
+    Methods:
+        scrap(self, url, start_page, end_page, page_size='10', proxies=None)
+
+    Example:
+        >>> scraper = MainPageScraper()
+        ... scraper.scrap(url, start_page, end_page, page_size='10', proxies=None)
+        ... scraper.get_car_urls()
+
+    Description:
+        This is the Main page scraper
+        You can get list of car urls from main page via get_car_urls() method
+    """
     def __init__(self):
-        self.threads = []
         self.car_urls = []
+        self._threads = []
         self._page_is_last = False
         self._semaphore = Semaphore(num_of_threads)
 
@@ -44,7 +62,7 @@ class MainPageScraper:
         self._semaphore.release()
 
     def _fill_car_urls(self, url, start_page=0, end_page=0, page_size='10', proxies=None) -> None:
-        self.threads = []
+        self._threads = []
         while not self._page_is_last and end_page and start_page <= end_page:
             self._semaphore.acquire()
             search_url = url + '&page=' + str(start_page) + '&size=' + page_size
@@ -53,18 +71,36 @@ class MainPageScraper:
             else:
                 proxy = None
             thread = Thread(target=self._scrap_main_page, args=(search_url, proxy))
-            self.threads.append(thread)
+            self._threads.append(thread)
             thread.start()
             start_page += 1
 
     def scrap(self, url, start_page, end_page, page_size='10', proxies=None) -> None:
         self._fill_car_urls(url, start_page, end_page-1, page_size, proxies)
-        while [thread.is_alive() for thread in self.threads].count(True) != 0:
+        while [thread.is_alive() for thread in self._threads].count(True) != 0:
             time.sleep(1)
         print("Total car urls found: " + str(len(self.car_urls)))
 
 
 class CarPageScraper:
+    """
+    Car page scraper
+
+    Methods:
+        scrap(self, urls)
+        scrap_car_page(self, url)
+        get_page_soup(self, url)
+
+    Example:
+        >>> scraper = CarPageScraper()
+        ... generator = scraper.scrap(urls)
+        ... car = scraper.scrap_car_page(url)
+        ... soup = scraper.get_page_soup(url)
+
+    Description:
+        This class is used to scrape data from car pages.
+        It uses selenium to access the car pages.
+    """
     def __init__(self, proxy=None):
         self.proxy = proxy
         self.driver = self._setupDriver()
