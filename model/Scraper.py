@@ -112,9 +112,6 @@ class CarPageScraper:
         options.add_argument('--headless')
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument("--disable-notifications")
-
-        prefs = {"profile.default_content_setting_values.notifications": 2,}
-        options.add_experimental_option("prefs", prefs)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
 
@@ -124,7 +121,7 @@ class CarPageScraper:
         return webdriver.Chrome(options=options)
 
     def _click_number_button(self):
-        WebDriverWait(self.driver, 30).until(
+        WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.CLASS_NAME, 'openPopupPhone'))).click()
 
     def _click_cookie_banner(self):
@@ -136,8 +133,8 @@ class CarPageScraper:
         print("Scraping car url: " + url)
         self.driver.get(url)
         self.driver.implicitly_wait(30)
-        if self.first_run:
-            self._click_cookie_banner()
+        # if self.first_run:
+        self._click_cookie_banner()
         try:
             self._click_number_button()
         except Exception as e:
@@ -145,6 +142,7 @@ class CarPageScraper:
         self.driver.implicitly_wait(10)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         print("Done")
+        self.driver.delete_all_cookies()  # without this sometime opens page with another structure
         return soup
 
     def scrap_car_page(self, url: str) -> Car:
