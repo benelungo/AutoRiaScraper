@@ -88,11 +88,8 @@ class CarPageScraper:
         return webdriver.Chrome(options=options)
 
     def _click_number_button(self):
-        try:
-            WebDriverWait(self.driver, 20).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, 'openPopupPhone'))).click()
-        except Exception as e:
-            print(e)
+        WebDriverWait(self.driver, 30).until(
+            EC.element_to_be_clickable((By.CLASS_NAME, 'openPopupPhone'))).click()
 
     def _click_cookie_banner(self):
         self.first_run = False
@@ -105,7 +102,10 @@ class CarPageScraper:
         self.driver.implicitly_wait(30)
         if self.first_run:
             self._click_cookie_banner()
-        self._click_number_button()
+        try:
+            self._click_number_button()
+        except Exception as e:
+            print("Phone number button not found: " + url)
         self.driver.implicitly_wait(10)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         print("Done")
