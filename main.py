@@ -13,8 +13,8 @@ db.drop_table()
 db.create_table()
 
 start = 0
-end = 4
-step = 2
+end = 100000
+step = 5000
 page_size = "100"
 cars = []
 num_of_threads = 4
@@ -28,6 +28,7 @@ def page_scrap_thread(urls):
         lock.acquire()
         db.insert(car)
         lock.release()
+    del sel
 
 
 def main():
@@ -36,6 +37,9 @@ def main():
         scraper = MainPageScraper()
         scraper.scrap("https://auto.ria.com/uk/search/?indexName=auto", i, i+step, page_size=page_size, proxies=proxies)
         urls = scraper.car_urls
+        if not urls:
+            print("Last page reached!")
+            break
 
         for j in range(num_of_threads):
             print(F"Scraping from {len(urls) // num_of_threads * j} to {len(urls) // num_of_threads * (j + 1)}")
@@ -46,6 +50,9 @@ def main():
 
         while [thread.is_alive() for thread in threads].count(True) != 0:
             time.sleep(1)
+
+        print("Sleeping for 30 seconds...")
+        time.sleep(30)
     db.dump()
 
 
