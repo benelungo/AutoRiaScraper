@@ -54,6 +54,8 @@ class CarPageParser:
         if item:
             number = "38" + re.sub("[^0-9]", "", item.get_text())
             return int(number)
+        else:
+            return '0'
 
     def image_url(self):
         item = self.soup.select_one('a.photo-74x56.loaded picture source')
@@ -76,7 +78,8 @@ class CarPageParser:
         if item:
             return item.get_text()
 
-    def datetime_found(self):
+    @staticmethod
+    def datetime_found():
         return date.today().strftime("%d/%m/%Y")
 
     def get_car_info(self) -> list:
