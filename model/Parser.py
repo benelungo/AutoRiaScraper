@@ -1,20 +1,6 @@
 import re
 from datetime import date
 
-from selenium.webdriver.common.by import By
-
-
-# url (строка);
-# title (строка);
-# price_usd (число);
-# odometer (число, нужно перевести 95 тыс. в 95000 и записать как число);
-# username (строка);
-# phone_number (число, пример структуры: +38063……..);
-# image_url (строка);
-# images_count (число);
-# car_number (строка);
-# car_vin (строка);
-# datetime_found (дата сохранения в базу);
 
 class MainPageParser:
     """

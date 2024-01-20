@@ -1,5 +1,4 @@
 import datetime
-import os
 import pickle
 import psycopg2
 from model.Car import Car
@@ -11,7 +10,7 @@ class DB:
 
     Attributes:
         dbname (str): database name
-        user (str): user name
+        user (str): username
         password (str): password
         host (str): host
         table_name (str): table name
